@@ -1,0 +1,4 @@
+package: github.com/pipizhang/wfw/auth-api
+import:
+- package: github.com/labstack/echo
+  version: 3.3.4
