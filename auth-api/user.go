@@ -26,20 +26,20 @@ type (
 	UserService struct {
 		Client            HTTPDoer
 		UserAPIAddress    string
-		AllowedUserHashes map[stirng]interface{}
+		AllowedUserHashes map[string]interface{}
 	}
 )
 
 func (h *UserService) Login(ctx context.Context, username, password string) (User, error) {
 	user, err := h.getUser(ctx, username)
 	if err != nil {
-		return uesr, err
+		return user, err
 	}
 
 	userKey := fmt.Sprintf("%s_%s", username, password)
 
 	if _, ok := h.AllowedUserHashes[userKey]; !ok {
-		return user, ErrWrongCredentials
+		return user, ErrorWrongCredentials
 	}
 
 	return user, nil
@@ -80,8 +80,8 @@ func (h *UserService) getUser(ctx context.Context, username string) (User, error
 
 func (h *UserService) getUserAPIToken(username string) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
-	claims := token.Cliams.(jwt.MapClaims)
+	claims := token.Claims.(jwt.MapClaims)
 	claims["username"] = username
 	claims["scope"] = "read"
-	return token.SignedString([]byte(JWTSecret))
+	return token.SignedString([]byte(App.JWTSecret))
 }
